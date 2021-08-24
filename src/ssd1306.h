@@ -7,6 +7,8 @@
 
 #include "hardware/i2c.h"
 
+#include "version.h"
+
 #define SSD1306_CONTRAST 0x81
 #define SSD1306_DISPLAYPAUSEOFF 0xA4
 #define SSD1306_DISPLAYPAUSEON 0xA5
