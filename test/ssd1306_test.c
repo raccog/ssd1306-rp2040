@@ -4,7 +4,7 @@
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 
-#include "ssd1306.h"
+#include "ssd1306/ssd1306.h"
 
 #define TEST_SLEEP_MS 2000
 

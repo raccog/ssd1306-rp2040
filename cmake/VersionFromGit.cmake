@@ -23,4 +23,4 @@ endif()
 
 set(SSD1306_VERSION ${version_string})
 
-configure_file(src/version.h.in src/version.h @ONLY)
+configure_file(include/ssd1306/version.h.in include/ssd1306/version.h @ONLY)
