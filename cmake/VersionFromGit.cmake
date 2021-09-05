@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 macro(get_version project_name)
-    execute_process(COMMAND "git" "describe" OUTPUT_VARIABLE version_string RESULT_VARIABLE result)
+    execute_process(COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_VARIABLE version_string RESULT_VARIABLE result)
 
     if (result EQUAL 0)
         string(FIND ${version_string} "-" dash_idx)
