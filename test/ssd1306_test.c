@@ -85,7 +85,7 @@ int main() {
 
     printf("--------------------------------------------------------------\n");
     printf("Starting SSD1306 test program in %i milliseconds...\n", TEST_SLEEP_MS);
-    printf("Running library version: %s\n", SSD1306_VERSION);
+    printf("Running library version: %s\n", ssd1306_VERSION);
     printf("--------------------------------------------------------------\n");
     sleep_ms(TEST_SLEEP_MS);
 
