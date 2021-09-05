@@ -90,7 +90,7 @@ int main() {
     sleep_ms(TEST_SLEEP_MS);
 
     printf("Initializing OLED with empty screen (%i milliseconds)...\n\n", TEST_SLEEP_MS);
-    SSD1306 ssd;
+    ssd1306_state_t ssd;
     ssd1306_init(&ssd, 0x3c, i2c1, BLACK);
     sleep_ms(TEST_SLEEP_MS);
     ssd1306_free(&ssd);

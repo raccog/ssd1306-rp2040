@@ -52,20 +52,20 @@
 
 /*
 
-SSD1306 structs and enums.
+ssd1306_state_t structs and enums.
 
 */
 
 typedef enum {
 	BLACK = 0,
     WHITE = 1,
-} Color;
+} ssd1306_color_t;
 
 typedef enum {
     HORIZONTAL_ADDR = 0x00,
     VERTICAL_ADDR = 0x01,
     PAGE_ADDR = 0x02
-} MemoryMode;
+} ssd1306_memory_mode_t;
 
 typedef struct {
     uint16_t addr;
@@ -73,17 +73,17 @@ typedef struct {
     uint8_t width;
     uint8_t height;
     uint8_t *buffer;
-} SSD1306;
+} ssd1306_state_t;
 
 /*
  
-SSD1306 initialization and free functions.
+ssd1306_state_t initialization and free functions.
 
 */
 
-uint32_t ssd1306_init(SSD1306 *ssd, uint16_t addr, i2c_inst_t *i2c, Color color);
+uint32_t ssd1306_init(ssd1306_state_t *ssd, uint16_t addr, i2c_inst_t *i2c, ssd1306_color_t color);
 
-static inline void ssd1306_free(SSD1306 *ssd) {
+static inline void ssd1306_free(ssd1306_state_t *ssd) {
     free(ssd->buffer);
 }
 
@@ -91,55 +91,55 @@ static inline void ssd1306_free(SSD1306 *ssd) {
 
 Low level state changing functions.
 
-These functions change the SSD1306 state by sending either commands or data.
+These functions change the ssd1306_state_t state by sending either commands or data.
 
 */
 
-static inline void ssd1306_send_command(SSD1306 *ssd, uint8_t command) {
+static inline void ssd1306_send_command(ssd1306_state_t *ssd, uint8_t command) {
     const uint8_t message[] = {SSD1306_CONTROL_COMMAND, command};
     i2c_write_blocking(ssd->i2c, ssd->addr, message, 2, false);
 }
 
-void ssd1306_send_command_list(SSD1306 *ssd, const uint8_t *commands, size_t command_size);
+void ssd1306_send_command_list(ssd1306_state_t *ssd, const uint8_t *commands, size_t command_size);
 
-void ssd1306_send_data(SSD1306 *ssd, const uint8_t *data, size_t data_size);
+void ssd1306_send_data(ssd1306_state_t *ssd, const uint8_t *data, size_t data_size);
 
 /*
 
-SSD1306 state changing functions.
+ssd1306_state_t state changing functions.
 
-These functions send commands to the SSD1306 and affect its state.
+These functions send commands to the ssd1306_state_t and affect its state.
 
 */
 
-void ssd1306_set_pixels(SSD1306 *ssd);
+void ssd1306_set_pixels(ssd1306_state_t *ssd);
 
-static inline void ssd1306_set_display_power(SSD1306 *ssd, bool power) {
+static inline void ssd1306_set_display_power(ssd1306_state_t *ssd, bool power) {
     ssd1306_send_command(ssd, SSD1306_DISPLAYOFF | (uint8_t)power);
 }
 
-static inline void ssd1306_set_pause_display(SSD1306 *ssd, bool pause) {
+static inline void ssd1306_set_pause_display(ssd1306_state_t *ssd, bool pause) {
     ssd1306_send_command(ssd, SSD1306_DISPLAYPAUSEOFF | (uint8_t)pause);
 }
 
-static inline void ssd1306_set_invert_colors(SSD1306 *ssd, bool invert) {
+static inline void ssd1306_set_invert_colors(ssd1306_state_t *ssd, bool invert) {
     ssd1306_send_command(ssd, SSD1306_NORMALDISPLAY | (uint8_t)invert);
 }
 
-static inline void ssd1306_set_memory_mode(SSD1306 *ssd, MemoryMode mode) {
+static inline void ssd1306_set_memory_mode(ssd1306_state_t *ssd, ssd1306_memory_mode_t mode) {
     const uint8_t message[] = {SSD1306_MEMORYMODE, (uint8_t)mode};
     ssd1306_send_command_list(ssd, message, 2);
 }
 
-static inline void ssd1306_set_vertical_flip(SSD1306 *ssd, bool flipped) {
+static inline void ssd1306_set_vertical_flip(ssd1306_state_t *ssd, bool flipped) {
     ssd1306_send_command(ssd, SSD1306_COMSCANNORMAL | ((uint8_t)flipped) * 0x8);
 }
 
-static inline void ssd1306_set_horizontal_flip(SSD1306 *ssd, bool flipped) {
+static inline void ssd1306_set_horizontal_flip(ssd1306_state_t *ssd, bool flipped) {
     ssd1306_send_command(ssd, SSD1306_SEGNORMAL | (uint8_t)flipped);
 }
 
-static inline void ssd1306_set_full_rotation(SSD1306 *ssd, bool rotated) {
+static inline void ssd1306_set_full_rotation(ssd1306_state_t *ssd, bool rotated) {
     ssd1306_set_vertical_flip(ssd, rotated);
     ssd1306_set_horizontal_flip(ssd, rotated);
 }
@@ -148,16 +148,16 @@ static inline void ssd1306_set_full_rotation(SSD1306 *ssd, bool rotated) {
 
 Buffer changing functions.
 
-These functions alter the buffer in memory and do not change the SSD1306 state
+These functions alter the buffer in memory and do not change the ssd1306_state_t state
 until a state changing function is used.
 
 */
 
-static inline void ssd1306_buffer_set_pixels_direct(SSD1306 *ssd, const uint8_t *pixels) {
+static inline void ssd1306_buffer_set_pixels_direct(ssd1306_state_t *ssd, const uint8_t *pixels) {
     memcpy(ssd->buffer, pixels, ssd->width * ssd->height / 8);
 }
 
-static inline void ssd1306_buffer_fill_pixels(SSD1306 *ssd, Color color) {
+static inline void ssd1306_buffer_fill_pixels(ssd1306_state_t *ssd, ssd1306_color_t color) {
     memset(ssd->buffer, (color == WHITE) ? 0xff : 0x00, ssd->width * ssd->height / 8);
 }
 
